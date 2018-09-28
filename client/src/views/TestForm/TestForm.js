@@ -7,8 +7,6 @@ import GridItem from '../../components/Grid/GridItem'
 import Card from '../../components/Card/Card'
 import CardBody from '../../components/Card/CardBody'
 
-
-
 // Add Captcha
 // When there is a match conformation that field should add a dependencies object to the field it needs to match
 
@@ -148,7 +146,7 @@ const TestForm = (props) => {
         {value: "blue", text: "blue"}
       ],
       validation: {
-        required: false,
+        required: true,
         errorMessage: 'Please select a primary color.'
       },
       valid: false,
@@ -171,7 +169,7 @@ const TestForm = (props) => {
         {value: "purple", text: "purple"}
       ],
       validation: {
-        required: false,
+        required: true,
         errorMessage: 'Please select at least one secondary color.'
       },
       valid: false,

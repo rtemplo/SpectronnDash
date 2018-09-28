@@ -1,20 +1,22 @@
 export const checkValidity = (value, rules) => {
   let isValid = true;
 
-  if (rules.required && value !== undefined && value !== '') {
+  if (value !== undefined && value !== '') {
 
-    if (value instanceof Array) {
-      isValid = value.length > 0;
-    } else if (value instanceof Date) {
-      isValid = value instanceof Date;
-    } else {
-      if ( rules.isNumeric || rules.minVal || rules.maxVal ) {
-        value = +value
+    if (rules.required) {
+      if (value instanceof Array) {
+        isValid = value.length > 0;
+      } else if (value instanceof Date) {
+        isValid = value instanceof Date;
       } else {
-        value = value.trim()
-      }
+        if ( rules.isNumeric || rules.minVal || rules.maxVal ) {
+          value = +value
+        } else {
+          value = value.trim()
+        }
 
-      isValid = value !== ''
+        isValid = value !== ''
+      }
     }
 
     if (rules.matches) {
@@ -50,8 +52,8 @@ export const checkValidity = (value, rules) => {
     if (rules.isPhone) {
       //Validating multiple phone number formats
 
-      //Basic 10 digit
-      const numeric10 = /^\d{10}$/
+      //Basic 10 digit - Very Lax (not recommended for actual  use)
+      // const numeric10 = /^\d{10}$/
 
       //North American format with area code
       const formatNA = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
@@ -60,8 +62,8 @@ export const checkValidity = (value, rules) => {
       const formatInter_w_CC = /^\+?([0-9]{2})\)?[-. ]?([0-9]{4})[-. ]?([0-9]{4})$/
 
       isValid = (
-        numeric10.test(value) 
-        || 
+        // numeric10.test(value) 
+        // || 
         formatNA.test(value) 
         || 
         formatInter_w_CC.test(value)
@@ -109,6 +111,9 @@ export const checkValidity = (value, rules) => {
       isValid = pattern.test(value) && isValid
 
     }
+  } else {
+    // Field is empty (user did not answer), but is not required so it is still valid
+    isValid = (!rules.required) ? true : false;
   }
   // console.log(`Validity: ${isValid}`)
   return isValid
