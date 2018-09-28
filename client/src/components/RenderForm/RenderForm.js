@@ -172,12 +172,12 @@ class RenderForm extends Component {
 
     const fieldValues = [updatedFormElement.value, updatedFormElement.valid, updatedFormElement.touched]
 
-    //Fold the modifications back into the copy of state
+    //Fold the modifications in the copied object back into its state copy
     updatedFormConfig[inputIdentifier] = updatedFormElement
 
-    // Optimistically assuming that the form is complete, iterate through all the fields and verify if all fields are indeed valid
-    // If any field is found incomplete or wrongly inputted the form will be marked invalid. This will eventually suppress submission
-    // as the submit button disable flag is based on the formIsValid state flag.
+    // Optimistically assuming that the form is complete, iterate through all the fields and verify if all fields are indeed valid.
+    // If any field is found incomplete or wrongly inputted, the form will be marked invalid. This will eventually suppress submission
+    //  since the submit button is disabled based on the formIsValid state value.
     let formIsValid = true;
     for (let inputIdentifier in updatedFormConfig) {
       if (updatedFormConfig[inputIdentifier].validation.required) {
@@ -186,8 +186,8 @@ class RenderForm extends Component {
     }
 
     /* 
-    So at this point we need to save data back to redux but the format is still not compatible.
-    We will reconcile the payload passed here and the structure in Redux using Immutable in the reducer file
+    Up to this point in the logic we need to save data back to redux but the format is still transformed to lighter format redux uses.
+    We will reconcile the data passed here to the structure in Redux using Immutable within the reducer file.
     */
     
     this.setState({formConfig: updatedFormConfig, formIsValid: formIsValid}, () => {
@@ -214,22 +214,23 @@ class RenderForm extends Component {
   }   
 
   onReset = () => {
-    let initResetValue = ''
-    const resetformValues = Object.keys(this.state.formConfig).reduce((acc, item) => {
-      initResetValue = (this.state.formConfig[item].value instanceof Array)?[]:''
-      acc[item] = [initResetValue, false, false]
-      return acc
-    }, {})
+    // let initResetValue = ''
+    // const resetformValues = Object.keys(this.state.formConfig).reduce((acc, item) => {
+    //   initResetValue = (this.state.formConfig[item].value instanceof Array)?[]:''
+    //   acc[item] = [initResetValue, false, false]
+    //   return acc
+    // }, {})
 
-    const resetReduxFormState = {
-      [this.state.formName]: {
-        fields: resetformValues,
-        isValid: false,
-        submitted: false
-      }
-    }
+    // const resetReduxFormState = {
+    //   [this.state.formName]: {
+    //     fields: resetformValues,
+    //     isValid: false,
+    //     submitted: false
+    //   }
+    // }
 
-    this.props.onInit(resetReduxFormState)
+    // this.props.onInit(resetReduxFormState)
+    this.props.onDelete(this.state.formName)
     this.props.history.go(this.props.location.pathname)
   }
 
@@ -324,7 +325,7 @@ class RenderForm extends Component {
     this.styleClasses = this.props
 
     let redirectTo = null
-    if (this.state.formSubmitted && this.props.redirectTo) {
+    if (this.state.formSubmitted && this.props.redirectTo && this.props.redirectTo.trim() !== '') {
       redirectTo = <Redirect to={this.props.redirectTo} />
     }
 
